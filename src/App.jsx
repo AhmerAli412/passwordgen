@@ -15,6 +15,7 @@ const PasswordGenerator = () => {
   const [keywords, setKeywords] = useState('');
   const [allowAmbiguous, setAllowAmbiguous] = useState(true);
   const [passwordHistory, setPasswordHistory] = useState([]);
+  const [copyNotification, setCopyNotification] = useState(false); // Add this state variable
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -101,8 +102,13 @@ const PasswordGenerator = () => {
   const copyToClipboard = () => {
     const finalPassword = incorporateKeywords(generatedPassword, keywords);
     navigator.clipboard.writeText(finalPassword);
-    alert('Password copied to clipboard!');
+    setCopyNotification(true);
+    setTimeout(() => {
+      setCopyNotification(false);
+    }, 2000); // Reset copy notification after 2 seconds
   };
+  
+
 
   const evaluatePasswordStrength = () => {
     const length = passwordLength;
@@ -297,13 +303,22 @@ const PasswordGenerator = () => {
           >
             Generate Password
           </button>
+
           <button
-            onClick={copyToClipboard}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Copy Password
-          </button>
+  onClick={copyToClipboard}
+  className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${
+    copyNotification ? 'cursor-not-allowed' : ''
+  }`}
+  disabled={copyNotification}
+>
+  {copyNotification ? 'Copied!' : 'Copy Password'}
+</button>
+
         </div>
+
+        {/* {copyNotification && (
+        <div className="notification">Password copied to clipboard!</div>
+      )} */}
   
         <div className="mb-4">
           <span className="font-bold">Password Strength:</span> {passwordStrength}
